@@ -2,6 +2,19 @@ import Foundation
 import SwiftData
 import SwiftUI
 
+enum Gender: String, CaseIterable, Identifiable {
+    case female, male, nonBinary, preferNotToSay
+    var id: String { rawValue }
+    var label: String {
+        switch self {
+        case .female: return "Female"
+        case .male: return "Male"
+        case .nonBinary: return "Non-binary"
+        case .preferNotToSay: return "Prefer not to say"
+        }
+    }
+}
+
 @Model
 final class Person {
     @Attribute(.unique) var id: UUID
@@ -9,6 +22,8 @@ final class Person {
     var colorHex: String
     var syncToHealth: Bool
     var goalKg: Double?
+    var dateOfBirth: Date?
+    var genderRaw: String?
     var sortOrder: Int
     var createdAt: Date
 
@@ -20,6 +35,8 @@ final class Person {
          colorHex: String = Person.defaultColors.first!,
          syncToHealth: Bool = false,
          goalKg: Double? = nil,
+         dateOfBirth: Date? = nil,
+         genderRaw: String? = nil,
          sortOrder: Int = 0,
          createdAt: Date = Date()) {
         self.id = id
@@ -27,8 +44,20 @@ final class Person {
         self.colorHex = colorHex
         self.syncToHealth = syncToHealth
         self.goalKg = goalKg
+        self.dateOfBirth = dateOfBirth
+        self.genderRaw = genderRaw
         self.sortOrder = sortOrder
         self.createdAt = createdAt
+    }
+
+    var gender: Gender? {
+        get { genderRaw.flatMap(Gender.init(rawValue:)) }
+        set { genderRaw = newValue?.rawValue }
+    }
+
+    var age: Int? {
+        guard let dob = dateOfBirth else { return nil }
+        return Calendar.current.dateComponents([.year], from: dob, to: Date()).year
     }
 
     static let defaultColors: [String] = [

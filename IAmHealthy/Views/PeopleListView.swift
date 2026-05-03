@@ -80,6 +80,9 @@ struct PersonEditView: View {
     @State private var colorHex = Person.defaultColors.first!
     @State private var syncToHealth = false
     @State private var goalText = ""
+    @State private var hasDOB = false
+    @State private var dob: Date = Calendar.current.date(byAdding: .year, value: -30, to: Date()) ?? Date()
+    @State private var gender: Gender = .preferNotToSay
     @State private var loaded = false
 
     private var unit: WeightUnit { prefsList.first?.unit ?? .kg }
@@ -111,6 +114,25 @@ struct PersonEditView: View {
                     }
                 }
                 .padding(.vertical, 4)
+            }
+            Section {
+                Toggle("Date of birth", isOn: $hasDOB.animation())
+                if hasDOB {
+                    DatePicker("Date of birth",
+                               selection: $dob,
+                               in: ...Date(),
+                               displayedComponents: .date)
+                }
+            } footer: {
+                if hasDOB {
+                    let years = Calendar.current.dateComponents([.year], from: dob, to: Date()).year ?? 0
+                    Text("Age: \(years)")
+                }
+            }
+            Section("Gender") {
+                Picker("Gender", selection: $gender) {
+                    ForEach(Gender.allCases) { g in Text(g.label).tag(g) }
+                }
             }
             Section("Goal") {
                 HStack {
@@ -151,6 +173,8 @@ struct PersonEditView: View {
                 if let kg = person.goalKg {
                     goalText = String(format: "%.1f", UnitFormatter.kgToDisplay(kg, unit: unit))
                 }
+                if let d = person.dateOfBirth { hasDOB = true; dob = d }
+                gender = person.gender ?? .preferNotToSay
             } else {
                 let used = Set(people.map(\.colorHex))
                 colorHex = Person.defaultColors.first(where: { !used.contains($0) }) ?? Person.defaultColors[0]
@@ -179,12 +203,16 @@ struct PersonEditView: View {
             person.colorHex = colorHex
             person.syncToHealth = syncToHealth
             person.goalKg = parsedGoal
+            person.dateOfBirth = hasDOB ? dob : nil
+            person.gender = gender
         } else {
             let next = (people.map(\.sortOrder).max() ?? -1) + 1
             let new = Person(name: trimmed,
                              colorHex: colorHex,
                              syncToHealth: syncToHealth,
                              goalKg: parsedGoal,
+                             dateOfBirth: hasDOB ? dob : nil,
+                             genderRaw: gender.rawValue,
                              sortOrder: next)
             context.insert(new)
             if prefsList.first?.selectedPersonID == nil {
