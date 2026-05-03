@@ -22,6 +22,8 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSHealthShareUsageDescription</key>
+	<string>I Am Healthy! does not read your Health data. This permission is required by iOS even when an app only writes to Health.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>I Am Healthy! saves your weight entries to Apple Health so they show up alongside your other health data.</string>
 	<key>UILaunchScreen</key>
