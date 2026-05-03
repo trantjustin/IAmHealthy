@@ -10,7 +10,6 @@ struct AddEntrySheet: View {
     @State private var date = Date()
     @State private var weightText = ""
     @State private var note = ""
-    @State private var saveError: String?
     @State private var saving = false
 
     private var unit: WeightUnit { prefsList.first?.unit ?? .kg }
@@ -54,13 +53,6 @@ struct AddEntrySheet: View {
                     }
                     TextField("Note (optional)", text: $note)
                 }
-                if let saveError {
-                    Section {
-                        Label(saveError, systemImage: "exclamationmark.triangle")
-                            .foregroundStyle(.orange)
-                            .font(.footnote)
-                    }
-                }
             }
             .navigationTitle("New Entry")
             .navigationBarTitleDisplayMode(.inline)
@@ -85,15 +77,14 @@ struct AddEntrySheet: View {
         let entry = WeightEntry(date: date, kilograms: kg, note: note.isEmpty ? nil : note, person: person)
         context.insert(entry)
 
-        if person.syncToHealth {
-            do {
-                let uuid = try await HealthKitService.shared.saveBodyMass(kg: kg, date: date)
+        if person.syncToHealth, HealthKitService.shared.authorizationStatus() == .sharingAuthorized {
+            // Best-effort write to Apple Health. Failures don't block dismissal —
+            // the entry is already persisted locally.
+            if let uuid = try? await HealthKitService.shared.saveBodyMass(kg: kg, date: date) {
                 entry.healthKitUUID = uuid
-            } catch {
-                saveError = "Saved locally, but couldn't write to Apple Health: \(error.localizedDescription)"
             }
         }
         try? context.save()
-        if saveError == nil { dismiss() }
+        dismiss()
     }
 }
