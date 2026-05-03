@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support &middot; I Am Healthy!</title>
+<meta name="description" content="Help and FAQ for the I Am Healthy! weight tracking app.">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="stylesheet" href="_shared.css">
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+    <a href="index.html"><img class="icon" src="icon.png" alt="I Am Healthy! app icon"></a>
+    <h1>Support</h1>
+    <p class="tagline">Answers to common questions, plus how to get in touch.</p>
+</header>
+
+<h2>Getting started</h2>
+
+<details class="faq" open>
+    <summary>How do I log my first weight?</summary>
+    <p>Open the <strong>Log</strong> tab and tap the <strong>+</strong> button in the top right. Enter your weight, optionally adjust the date and add a note, then tap <strong>Save</strong>.</p>
+</details>
+
+<details class="faq">
+    <summary>How do I switch between kilograms and pounds?</summary>
+    <p>You're prompted to pick on first launch. To change later, go to <strong>Settings &rarr; Units</strong> and choose the other option. Your saved data isn't altered &mdash; only how it's displayed.</p>
+</details>
+
+<details class="faq">
+    <summary>Can I edit or delete a past entry?</summary>
+    <p>Swipe left on any entry in the Log tab to delete it. (Editing isn't supported yet &mdash; delete and re-add for now.)</p>
+</details>
+
+<h2>Apple Health</h2>
+
+<details class="faq">
+    <summary>How does Apple Health sync work?</summary>
+    <p>I Am Healthy! does <em>write-only</em> syncing. When you save a new entry for a person whose <strong>Sync to Apple Health</strong> toggle is on, that weight is written to Health as a Body Mass sample. The app does not read existing samples back from Health.</p>
+</details>
+
+<details class="faq">
+    <summary>Why can only one person sync to Apple Health?</summary>
+    <p>Apple Health on your phone represents the device owner's data. Mixing multiple people's weights into one Health record would mislead Apple's trends, your doctor, and other apps that read from Health. So we let exactly one profile &mdash; usually you &mdash; write to Health, while everyone else stays only inside this app.</p>
+</details>
+
+<details class="faq">
+    <summary>I denied Health access by mistake. How do I re-enable it?</summary>
+    <p>Open the iOS <strong>Settings</strong> app &rarr; <strong>Health</strong> &rarr; <strong>Data Access &amp; Devices</strong> &rarr; <strong>I Am Healthy!</strong> and turn on <em>Body Mass</em> under "Allow… to Write Data."</p>
+</details>
+
+<details class="faq">
+    <summary>Will deleting an entry remove it from Apple Health too?</summary>
+    <p>Yes. If the entry was originally written to Health, deleting it in I Am Healthy! also deletes the matching sample from Health (best-effort).</p>
+</details>
+
+<h2>Multiple people</h2>
+
+<details class="faq">
+    <summary>How do I add another person?</summary>
+    <p>Go to <strong>Settings &rarr; Manage People</strong> (or tap the avatar in the top-left of the Log/Trend tab and choose <em>Manage People…</em>). Tap <strong>+</strong>, give them a name and a color, set an optional goal, and save.</p>
+</details>
+
+<details class="faq">
+    <summary>How do I switch which person I'm logging for?</summary>
+    <p>Tap the avatar in the top-left of the Log or Trend tab and pick a name from the menu.</p>
+</details>
+
+<details class="faq">
+    <summary>What happens to a person's entries when I delete them?</summary>
+    <p>All of that person's local entries are deleted along with them. If they were syncing to Health, their existing Health samples are <em>not</em> automatically removed &mdash; you can clear those from the Health app if you wish.</p>
+</details>
+
+<h2>Goals &amp; trend</h2>
+
+<details class="faq">
+    <summary>How is the projected goal date calculated?</summary>
+    <p>Once a person has at least about two weeks of recent entries, the app fits a simple linear regression to the last 14 days and extrapolates to the goal weight. It's a rough guide, not a promise &mdash; if your trend is flat or moving the wrong way, no date is shown.</p>
+</details>
+
+<details class="faq">
+    <summary>Where did the 1-week range option go?</summary>
+    <p>It was a bit too noisy on a daily-logged metric &mdash; we removed it in favor of 1M / 3M / 1Y / All.</p>
+</details>
+
+<h2>Reminders</h2>
+
+<details class="faq">
+    <summary>The daily reminder isn't firing.</summary>
+    <p>Open iOS <strong>Settings &rarr; Notifications &rarr; I Am Healthy!</strong> and confirm <em>Allow Notifications</em> is on. Then in I Am Healthy!, toggle the reminder off and back on to reschedule it.</p>
+</details>
+
+<h2>Data &amp; privacy</h2>
+
+<details class="faq">
+    <summary>Where is my data stored?</summary>
+    <p>Locally on your device, using Apple's SwiftData framework. There is no account, no cloud, and no analytics. See the <a href="privacy.html">privacy page</a> for the short version.</p>
+</details>
+
+<details class="faq">
+    <summary>How do I back up or move my data?</summary>
+    <p>Your data is included in your standard iCloud or iTunes/Finder iPhone backup. There's no in-app export today; if that's important to you, please let us know.</p>
+</details>
+
+<hr>
+
+<h2>Still need help?</h2>
+<div class="card">
+    <p>
+        Open an issue on the project's GitHub page, or email the maintainer. Please include your iOS version, device model, and a description of what happened.
+    </p>
+    <p>
+        <a class="cta" href="mailto:support@example.com">Email support</a>
+        <a class="cta secondary" href="index.html">Back to home</a>
+    </p>
+</div>
+
+<footer>
+    <p>
+        <a href="index.html">Home</a> &nbsp;&middot;&nbsp;
+        <a href="privacy.html">Privacy</a>
+    </p>
+    <p>&copy; I Am Healthy!</p>
+</footer>
+
+</div>
+</body>
+</html>
