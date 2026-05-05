@@ -85,7 +85,7 @@ struct PeopleTipOverlay: View {
                     .frame(width: 16, height: 10)
                     .padding(.leading, 22)
 
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
                         Image(systemName: "person.2.fill")
                             .foregroundStyle(.tint)
@@ -96,6 +96,11 @@ struct PeopleTipOverlay: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
+                    Button("Got it", action: dismiss)
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.small)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.top, 2)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
@@ -107,7 +112,6 @@ struct PeopleTipOverlay: View {
             }
             .frame(maxWidth: 280, alignment: .leading)
             .padding(.top, 48) // just under the toolbar (avatar + user's name)
-            .onTapGesture { dismiss() }
         }
     }
 }
