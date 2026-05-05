@@ -72,44 +72,42 @@ struct PeopleTipOverlay: View {
     let dismiss: () -> Void
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            Color.black.opacity(0.35)
+        ZStack(alignment: .top) {
+            Color.black.opacity(0.25)
                 .ignoresSafeArea()
                 .onTapGesture { dismiss() }
 
             VStack(alignment: .leading, spacing: 0) {
-                // Arrow pointing up toward the toolbar.
+                // Arrow on the left side of the card, pointing up at the
+                // top-leading avatar in the toolbar.
                 Triangle()
                     .fill(Color(.systemBackground))
-                    .frame(width: 18, height: 12)
-                    .padding(.leading, 28)
+                    .frame(width: 16, height: 10)
+                    .padding(.leading, 22)
 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 8) {
                         Image(systemName: "person.2.fill")
                             .foregroundStyle(.tint)
                         Text("Track multiple people")
-                            .font(.headline)
+                            .font(.subheadline.weight(.semibold))
                     }
-                    Text("Tap your avatar in the top-left to switch profiles or add family members.")
-                        .font(.subheadline)
+                    Text("Tap your avatar to switch profiles or add family.")
+                        .font(.footnote)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
-                    Button("Got it") { dismiss() }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.small)
-                        .padding(.top, 4)
                 }
-                .padding(14)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
                 .background(
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .fill(Color(.systemBackground))
-                        .shadow(color: .black.opacity(0.18), radius: 12, y: 4)
+                        .shadow(color: .black.opacity(0.18), radius: 10, y: 3)
                 )
             }
-            .frame(maxWidth: 300, alignment: .leading)
-            .padding(.leading, 12)
-            .padding(.top, 56) // approx below nav bar
+            .frame(maxWidth: 280, alignment: .leading)
+            .padding(.top, 4)
+            .onTapGesture { dismiss() }
         }
     }
 }
