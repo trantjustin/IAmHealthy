@@ -106,7 +106,7 @@ struct PeopleTipOverlay: View {
                 )
             }
             .frame(maxWidth: 280, alignment: .leading)
-            .padding(.top, 4)
+            .padding(.top, 48) // just under the toolbar (avatar + user's name)
             .onTapGesture { dismiss() }
         }
     }
