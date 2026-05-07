@@ -92,7 +92,7 @@ struct PeopleTipOverlay: View {
                         Text("Track multiple people")
                             .font(.subheadline.weight(.semibold))
                     }
-                    Text("Tap your avatar to switch profiles or add family.")
+                    Text("Tap your avatar to switch profiles or add additional users.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)

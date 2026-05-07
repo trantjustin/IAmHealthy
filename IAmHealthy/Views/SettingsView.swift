@@ -42,7 +42,7 @@ struct SettingsView: View {
                     }
                 }
 
-                Section("Daily reminder") {
+                Section("Reminder") {
                     if let prefs {
                         Toggle("Enable reminder", isOn: Binding(
                             get: { prefs.reminderEnabled },
@@ -53,6 +53,47 @@ struct SettingsView: View {
                             }
                         ))
                         if prefs.reminderEnabled {
+                            Picker("Frequency", selection: Binding(
+                                get: { prefs.reminderFrequency },
+                                set: { newValue in
+                                    prefs.reminderFrequency = newValue
+                                    try? context.save()
+                                    Task { await applyReminder() }
+                                }
+                            )) {
+                                ForEach(ReminderFrequency.allCases) { f in
+                                    Text(f.label).tag(f)
+                                }
+                            }
+
+                            if prefs.reminderFrequency == .weekly {
+                                Picker("Day", selection: Binding(
+                                    get: { prefs.reminderWeekday },
+                                    set: { newValue in
+                                        prefs.reminderWeekday = newValue
+                                        try? context.save()
+                                        Task { await applyReminder() }
+                                    }
+                                )) {
+                                    ForEach(weekdayOptions(), id: \.0) { idx, name in
+                                        Text(name).tag(idx)
+                                    }
+                                }
+                            }
+
+                            if prefs.reminderFrequency == .custom {
+                                Stepper(value: Binding(
+                                    get: { prefs.reminderIntervalDays },
+                                    set: { newValue in
+                                        prefs.reminderIntervalDays = max(1, newValue)
+                                        try? context.save()
+                                        Task { await applyReminder() }
+                                    }
+                                ), in: 1...60) {
+                                    Text("Every \(prefs.reminderIntervalDays) day\(prefs.reminderIntervalDays == 1 ? "" : "s")")
+                                }
+                            }
+
                             DatePicker("Time",
                                        selection: Binding(
                                         get: { prefs.reminderTime },
@@ -63,6 +104,12 @@ struct SettingsView: View {
                                         }),
                                        displayedComponents: .hourAndMinute)
                         }
+                    }
+                } footer: {
+                    if let prefs, prefs.reminderEnabled, prefs.reminderFrequency == .custom {
+                        Text("Custom reminders fire every \(prefs.reminderIntervalDays) day\(prefs.reminderIntervalDays == 1 ? "" : "s") starting from when you save this setting.")
+                    } else {
+                        EmptyView()
                     }
                 }
 
@@ -87,9 +134,25 @@ struct SettingsView: View {
         guard let prefs else { return }
         if prefs.reminderEnabled {
             _ = try? await NotificationService.shared.requestAuthorization()
-            await NotificationService.shared.scheduleDaily(at: prefs.reminderTime)
+            await NotificationService.shared.schedule(
+                frequency: prefs.reminderFrequency,
+                time: prefs.reminderTime,
+                weekday: prefs.reminderWeekday,
+                intervalDays: prefs.reminderIntervalDays
+            )
         } else {
             NotificationService.shared.cancel()
+        }
+    }
+
+    private func weekdayOptions() -> [(Int, String)] {
+        let cal = Calendar.current
+        let symbols = cal.standaloneWeekdaySymbols // Sunday..Saturday
+        // Order starting from the user's locale's first weekday for nicer UX.
+        let first = cal.firstWeekday
+        return (0..<7).map { offset in
+            let idx = ((first - 1) + offset) % 7
+            return (idx + 1, symbols[idx])
         }
     }
 
