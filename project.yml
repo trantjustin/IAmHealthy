@@ -31,7 +31,7 @@ targets:
         INFOPLIST_KEY_UISupportedInterfaceOrientations: "UIInterfaceOrientationPortrait"
         DEVELOPMENT_ASSET_PATHS: '"IAmHealthy/Preview Content"'
         ENABLE_PREVIEWS: "YES"
-        TARGETED_DEVICE_FAMILY: "1,2"
+        TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_ENTITLEMENTS: IAmHealthy/IAmHealthy.entitlements
     dependencies:
       - sdk: HealthKit.framework
