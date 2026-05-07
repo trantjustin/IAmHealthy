@@ -42,7 +42,7 @@ struct SettingsView: View {
                     }
                 }
 
-                Section("Reminder") {
+                Section {
                     if let prefs {
                         Toggle("Enable reminder", isOn: Binding(
                             get: { prefs.reminderEnabled },
@@ -105,6 +105,8 @@ struct SettingsView: View {
                                        displayedComponents: .hourAndMinute)
                         }
                     }
+                } header: {
+                    Text("Reminder")
                 } footer: {
                     if let prefs, prefs.reminderEnabled, prefs.reminderFrequency == .custom {
                         Text("Custom reminders fire every \(prefs.reminderIntervalDays) day\(prefs.reminderIntervalDays == 1 ? "" : "s") starting from when you save this setting.")
