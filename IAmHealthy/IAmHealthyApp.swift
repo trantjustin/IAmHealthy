@@ -10,29 +10,20 @@ struct IAmHealthyApp: App {
     }
 
     private static func makeContainer() -> ModelContainer {
-        let schema = Schema([WeightEntry.self, UserPrefs.self, Person.self])
+        let schema = Schema(versionedSchema: SchemaV1.self)
         let config = ModelConfiguration(schema: schema)
         do {
-            return try ModelContainer(for: schema, configurations: [config])
+            return try ModelContainer(
+                for: schema,
+                migrationPlan: AppMigrationPlan.self,
+                configurations: [config]
+            )
         } catch {
-            // Schema mismatch (typically during development after adding /
-            // renaming model fields). Nuke the on-disk store and retry —
-            // we don't ship migrations yet.
-            wipePersistentStore()
-            do {
-                return try ModelContainer(for: schema, configurations: [config])
-            } catch {
-                fatalError("Failed to create ModelContainer after wipe: \(error)")
-            }
-        }
-    }
-
-    private static func wipePersistentStore() {
-        let fm = FileManager.default
-        guard let appSupport = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return }
-        // SwiftData writes default.store plus -shm / -wal sidecar files.
-        for name in ["default.store", "default.store-shm", "default.store-wal"] {
-            try? fm.removeItem(at: appSupport.appendingPathComponent(name))
+            // With a proper migration plan in place this should never fire
+            // for end users. If it does, crashing is preferable to silently
+            // wiping the local store and losing the user's data — it lets
+            // us see and respond to the failure instead.
+            fatalError("Failed to create ModelContainer: \(error)")
         }
     }
 
