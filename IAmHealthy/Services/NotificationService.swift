@@ -45,6 +45,9 @@ final class NotificationService {
 
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         try? await center.add(request)
+        Analytics.signal(Analytics.Event.reminderScheduled, parameters: [
+            "frequency": frequency.rawValue
+        ])
     }
 
     func cancel() {

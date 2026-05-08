@@ -63,6 +63,7 @@ struct LogView: View {
                 Task { try? await HealthKitService.shared.deleteBodyMass(uuid: hkUUID) }
             }
             context.delete(entry)
+            Analytics.signal(Analytics.Event.weightDeleted)
         }
         try? context.save()
     }

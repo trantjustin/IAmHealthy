@@ -16,6 +16,14 @@ final class HealthKitService {
     func requestAuthorization() async throws -> Bool {
         guard isAvailable else { return false }
         try await store.requestAuthorization(toShare: [bodyMass], read: [])
+        switch authorizationStatus() {
+        case .sharingAuthorized:
+            Analytics.signal(Analytics.Event.healthKitAuthorized)
+        case .sharingDenied:
+            Analytics.signal(Analytics.Event.healthKitDenied)
+        default:
+            break
+        }
         return true
     }
 

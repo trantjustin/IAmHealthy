@@ -149,6 +149,10 @@ struct OnboardingFlow: View {
         prefs.unitChosen = true
         prefs.onboardingCompleted = true
         try? context.save()
+        Analytics.signal(Analytics.Event.onboardingCompleted, parameters: [
+            "unit": unit.short,
+            "providedDOB": hasDOB ? "true" : "false"
+        ])
         dismiss()
     }
 }

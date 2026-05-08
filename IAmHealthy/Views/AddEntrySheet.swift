@@ -85,6 +85,9 @@ struct AddEntrySheet: View {
             }
         }
         try? context.save()
+        Analytics.signal(Analytics.Event.weightLogged, parameters: [
+            "syncedToHealth": person.syncToHealth ? "true" : "false"
+        ])
         dismiss()
     }
 }

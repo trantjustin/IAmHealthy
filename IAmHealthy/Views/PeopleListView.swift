@@ -63,6 +63,7 @@ struct PeopleListView: View {
                 prefs?.selectedPersonID = people.first(where: { $0.id != person.id })?.id
             }
             context.delete(person)
+            Analytics.signal(Analytics.Event.personDeleted)
         }
         try? context.save()
     }
@@ -215,6 +216,7 @@ struct PersonEditView: View {
                              genderRaw: gender.rawValue,
                              sortOrder: next)
             context.insert(new)
+            Analytics.signal(Analytics.Event.personAdded)
             if prefsList.first?.selectedPersonID == nil {
                 prefsList.first?.selectedPersonID = new.id
             }
