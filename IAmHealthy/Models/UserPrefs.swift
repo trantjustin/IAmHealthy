@@ -22,15 +22,20 @@ enum ReminderFrequency: String, CaseIterable, Identifiable {
 
 @Model
 final class UserPrefs {
-    var unitRaw: String
-    var unitChosen: Bool
-    var onboardingCompleted: Bool
-    var hasSeenPeopleTip: Bool
-    var reminderEnabled: Bool
-    var reminderTime: Date
-    var reminderFrequencyRaw: String
-    var reminderWeekday: Int            // 1 = Sunday … 7 = Saturday (Calendar convention)
-    var reminderIntervalDays: Int       // for .custom frequency
+    // Property-level defaults are REQUIRED for SwiftData lightweight migration
+    // when adding new non-optional fields to an existing schema. Without them,
+    // upgrading users (whose on-disk rows pre-date the field) crash on launch.
+    // Always provide a sensible default at the property level for any new
+    // non-optional persistent property.
+    var unitRaw: String = WeightUnit.kg.rawValue
+    var unitChosen: Bool = false
+    var onboardingCompleted: Bool = false
+    var hasSeenPeopleTip: Bool = false
+    var reminderEnabled: Bool = false
+    var reminderTime: Date = Calendar.current.date(from: DateComponents(hour: 8, minute: 0)) ?? Date()
+    var reminderFrequencyRaw: String = ReminderFrequency.daily.rawValue
+    var reminderWeekday: Int = 2        // 1 = Sunday … 7 = Saturday; Monday default
+    var reminderIntervalDays: Int = 3   // for .custom frequency
     var selectedPersonID: UUID?
 
     init(unitRaw: String = WeightUnit.kg.rawValue,

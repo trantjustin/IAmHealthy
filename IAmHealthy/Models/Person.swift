@@ -17,15 +17,17 @@ enum Gender: String, CaseIterable, Identifiable {
 
 @Model
 final class Person {
-    @Attribute(.unique) var id: UUID
-    var name: String
-    var colorHex: String
-    var syncToHealth: Bool
+    // Property-level defaults below are required for SwiftData lightweight
+    // migration when adding new non-optional fields. See UserPrefs comment.
+    @Attribute(.unique) var id: UUID = UUID()
+    var name: String = ""
+    var colorHex: String = Person.defaultColors.first!
+    var syncToHealth: Bool = false
     var goalKg: Double?
     var dateOfBirth: Date?
     var genderRaw: String?
-    var sortOrder: Int
-    var createdAt: Date
+    var sortOrder: Int = 0
+    var createdAt: Date = Date()
 
     @Relationship(deleteRule: .cascade, inverse: \WeightEntry.person)
     var entries: [WeightEntry] = []

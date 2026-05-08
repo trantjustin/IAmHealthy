@@ -3,9 +3,11 @@ import SwiftData
 
 @Model
 final class WeightEntry {
-    @Attribute(.unique) var id: UUID
-    var date: Date
-    var kilograms: Double
+    // Property-level defaults are required for SwiftData lightweight migration
+    // when these fields land on existing rows during an upgrade.
+    @Attribute(.unique) var id: UUID = UUID()
+    var date: Date = Date()
+    var kilograms: Double = 0
     var note: String?
     var healthKitUUID: UUID?
     var person: Person?
