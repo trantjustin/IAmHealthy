@@ -56,6 +56,8 @@ struct TrendView: View {
                                                systemImage: "chart.xyaxis.line",
                                                description: Text("Log some entries to see the trend."))
                     } else {
+                        let goalDisplay = active?.goalKg.map { UnitFormatter.kgToDisplay($0, unit: unit) }
+                        let yDomain = computeYDomain(for: filtered, goal: goalDisplay)
                         Chart {
                             ForEach(filtered) { entry in
                                 LineMark(
@@ -70,8 +72,8 @@ struct TrendView: View {
                                 )
                                 .foregroundStyle(active?.color ?? .accentColor)
                             }
-                            if let goalKg = active?.goalKg {
-                                RuleMark(y: .value("Goal", UnitFormatter.kgToDisplay(goalKg, unit: unit)))
+                            if let goalDisplay {
+                                RuleMark(y: .value("Goal", goalDisplay))
                                     .foregroundStyle(.green)
                                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
                                     .annotation(position: .top, alignment: .leading) {
@@ -79,6 +81,7 @@ struct TrendView: View {
                                     }
                             }
                         }
+                        .chartYScale(domain: yDomain)
                         .chartYAxisLabel(unit.short)
                         .padding()
                     }
@@ -116,6 +119,38 @@ struct TrendView: View {
         guard daysToGoal > 0, daysToGoal < 3650 else { return nil }
         let eta = Calendar.current.date(byAdding: .day, value: Int(daysToGoal.rounded()), to: latest.date) ?? now
         return "At current rate, ~" + eta.formatted(.dateTime.month(.abbreviated).day())
+    }
+
+    /// Compute a tight Y-axis domain for the filtered data so small changes
+    /// over short windows don't render as a flat line. The goal line is
+    /// included only when it's "close" to the data (within ~2× the data's
+    /// own range, or 5 display units when the data is essentially flat).
+    /// A faraway goal would otherwise re-flatten the chart.
+    private func computeYDomain(for entries: [WeightEntry], goal: Double?) -> ClosedRange<Double> {
+        let values = entries.map { UnitFormatter.kgToDisplay($0.kilograms, unit: unit) }
+        guard let dataMin = values.min(), let dataMax = values.max() else {
+            return 0...1 // Defensive; this branch isn't reached when entries is non-empty.
+        }
+        let dataRange = dataMax - dataMin
+
+        // Decide whether to include the goal in the domain.
+        var lo = dataMin
+        var hi = dataMax
+        if let g = goal {
+            let proximityWindow = max(dataRange * 2, 5.0)
+            if g >= dataMin - proximityWindow && g <= dataMax + proximityWindow {
+                lo = min(lo, g)
+                hi = max(hi, g)
+            }
+        }
+
+        // Pad: 20% of the visible range, with a sane floor so a perfectly
+        // flat dataset (or two values within < 1 unit) still gets breathing
+        // room. Floor of 1 display unit on each side feels right for both kg
+        // and lb scales.
+        let visibleRange = hi - lo
+        let padding = max(visibleRange * 0.2, 1.0)
+        return (lo - padding)...(hi + padding)
     }
 
     private func linearSlope(xs: [Double], ys: [Double]) -> Double? {
