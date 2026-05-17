@@ -64,7 +64,7 @@ ctx.drawRadialGradient(highlight,
 do {
     ctx.saveGState()
     let cx = side * 0.78
-    let cy = side * 0.20
+    let cy = side * 0.13 // lowered (NSGraphicsContext y-axis is bottom-origin)
     ctx.translateBy(x: cx, y: cy)
     ctx.rotate(by: -0.5) // ~28°
     let leafPath = CGMutablePath()
